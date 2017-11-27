@@ -33,6 +33,18 @@ gulp.task('copy', () => {
   gulp.src([`${source}/js/**`, `${source}/img/**`, `${source}/fonts/**`, `${source}/css/*.css`], {base: source}).pipe(gulp.dest(dist));
 });
 
+gulp.task('copy-img', () => {
+  gulp.src([`${source}/img/**`], {base: source}).pipe(gulp.dest(dist));
+});
+
+gulp.task('copy-js', () => {
+  gulp.src([`${source}/js/**`], {base: source}).pipe(gulp.dest(dist));
+});
+
+gulp.task('copy-fonts', () => {
+  gulp.src([`${source}/fonts/**`], {base: source}).pipe(gulp.dest(dist));
+});
+
 gulp.task('clean', (cb) => {
   return del([`${dist}/**`, `!${dist}`], cb);
 });
@@ -46,8 +58,12 @@ gulp.task('convert-sass', () => {
     .pipe(connect.reload());
 });
 
-gulp.task('watch', ['copy', 'convert-sass', 'convert-pug'], () => {
+gulp.task('watch', ['copy', 'copy-js', 'copy-img', 'copy-fonts', 'convert-sass', 'convert-pug'], () => {
+  gulp.watch(`${source}/img/**`, ['copy-img']);
+  gulp.watch(`${source}/js/**`, ['copy-js']);
+  gulp.watch(`${source}/fonts/**`, ['copy-fonts']);
   gulp.watch(`${source}/*.pug`, ['convert-pug']);
+  gulp.watch(`${source}/includes/*.pug`, ['convert-pug']);
   gulp.watch(`${source}/css/*.scss`, ['convert-sass']);
   return gulp.watch(`${source}/`, ['copy']);
 });
